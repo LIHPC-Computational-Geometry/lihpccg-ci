@@ -44,7 +44,7 @@ jobs:
           spack add ${{ github.event.repository.name }}
           # we use GITHUB_WORKSPACE instead of github.Workspace because in containers it
           # seems to be incorrect (see https://github.com/actions/runner/issues/2058)
-          spack develop -p $GITHUB_WORKSPACE --no-clone ${{ github.event.repository.name }}@0.0.0
+          spack develop -p $GITHUB_WORKSPACE --no-clone ${{ github.event.repository.name }}@999
           spack install --no-checksum
 
       - name: Build with cmake
