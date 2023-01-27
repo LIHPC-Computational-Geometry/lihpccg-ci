@@ -10,6 +10,9 @@ on:
         required: false
         type: string
 
+env:
+  QT_QPA_PLATFORM: offscreen
+
 jobs:
   main:
     name: Spack/CMake build & run
