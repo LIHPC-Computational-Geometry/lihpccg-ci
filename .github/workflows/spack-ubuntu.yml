@@ -70,7 +70,7 @@ jobs:
           spack env activate meshing-env
           spack load ${{ github.event.repository.name }}
           cd test_link/
-          cmake -S . -B build_exe
+          cmake ${{ inputs.cmake-options }} -S . -B build_exe
           cmake --build build_exe
           cd build_exe
           ctest
