@@ -73,4 +73,5 @@ jobs:
           cmake ${{ inputs.cmake-options }} -S . -B build_exe
           cmake --build build_exe
           cd build_exe
-          ctest
+          #ctest
+          ./test_link
