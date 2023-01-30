@@ -1,7 +1,7 @@
 {
-	"name": "MgxUbuntu (Minimal/Debug)",
-	//"image": "lihpccg/mgx-ubuntu.22.04-spack.0.19.0:latest",
-	"image": "lihpccg/x11ogl",
+	"name": "Ubuntu.22.04-Spack.0.19",
+	"image": "lihpccg/mgx-ubuntu.22.04-spack.0.19.0:latest",
+	//"image": "lihpccg/x11ogl",
 	"remoteUser": "root",
 	"extensions": [
 		"ms-vscode.cpptools",
