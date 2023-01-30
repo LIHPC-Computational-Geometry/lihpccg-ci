@@ -37,7 +37,6 @@ RUN source /spack/share/spack/setup-env.sh && \
 
 RUN sed -i 's#"${ARCHITECTURE}/${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH}"#"${PACKAGE}-${VERSION}"#g' spack/etc/spack/defaults/config.yaml
 #==========================================
-# vtk-maillage use strict variants (~opengl2+qt+mpi) needed by vtkcontrib
 RUN source /spack/share/spack/setup-env.sh && \
     spack env create meshing-env &&\
     spack env activate meshing-env &&\
@@ -45,7 +44,7 @@ RUN source /spack/share/spack/setup-env.sh && \
     spack add qt@5.14.2 &&\
     spack add hdf5+cxx~mpi &&\
     spack add opencascade &&\
-    spack add vtk-maillage~opengl2+qt+mpi &&\
+    spack add vtk-maillage~mpi &&\
     spack add cgns~mpi &&\
     spack add swig &&\
     spack concretize &&\
