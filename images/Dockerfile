@@ -45,7 +45,7 @@ RUN source /spack/share/spack/setup-env.sh && \
     spack add qt@5.14.2 &&\
     spack add hdf5+cxx~mpi &&\
     spack add opencascade &&\
-    spack add vtk-maillage~opengl2+qt~mpi \
+    spack add vtk-maillage~opengl2+qt~mpi &&\
     spack add cgns~mpi &&\
     spack add swig &&\
     spack concretize &&\
