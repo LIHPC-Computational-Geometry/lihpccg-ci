@@ -16,8 +16,8 @@ SHELL ["/bin/bash", "-c"]
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #==========================================
-# libxt-dev has been added in 01/23 to compile VTK.
-# Error msg without libxt-dev: "X11_Xt_LIB could not be found. Required for VTK X lib."
+# 01/23: libxt-dev has been added to compile VTK.
+#        Error msg without libxt-dev: "X11_Xt_LIB could not be found. Required for VTK X lib."
 RUN apt update &&\
     apt install -y build-essential cmake python3 python3-distutils python3-venv unzip zip curl git libxt-dev libgl-dev gfortran &&\
     apt clean &&\
@@ -37,12 +37,11 @@ RUN source /spack/share/spack/setup-env.sh && \
 
 RUN sed -i 's#"${ARCHITECTURE}/${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH}"#"${PACKAGE}-${VERSION}"#g' spack/etc/spack/defaults/config.yaml
 #==========================================
-# 30/01/23: vtk-maillage~mpi replaced by vtk-maillage~opengl2+qt~mpi to match vtkcontrib variants
 RUN source /spack/share/spack/setup-env.sh && \
     spack env create meshing-env &&\
     spack env activate meshing-env &&\
     spack add python@3 &&\
-    spack add qt@5.14.2 &&\
+    spack add qt+opengl &&\
     spack add hdf5+cxx~mpi &&\
     spack add opencascade &&\
     spack add vtk-maillage~opengl2+qt~mpi &&\
