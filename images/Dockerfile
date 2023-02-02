@@ -18,8 +18,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #==========================================
 # 01/23: libxt-dev has been added to compile VTK.
 #        Error msg without libxt-dev: "X11_Xt_LIB could not be found. Required for VTK X lib."
+# 02/23: autoconf added. Used by gmds during build.
+
 RUN apt update &&\
-    apt install -y build-essential cmake python3 python3-distutils python3-venv unzip zip curl git libxt-dev libgl-dev gfortran &&\
+    apt install -y build-essential cmake python3 python3-distutils python3-venv unzip zip curl git libxt-dev libgl-dev gfortran autoconf &&\
     apt clean &&\
     rm -rf /var/lib/apt/lists/*
 #==========================================
