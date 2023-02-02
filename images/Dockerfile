@@ -37,6 +37,7 @@ RUN source /spack/share/spack/setup-env.sh && \
 
 RUN sed -i 's#"${ARCHITECTURE}/${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH}"#"${PACKAGE}-${VERSION}"#g' spack/etc/spack/defaults/config.yaml
 #==========================================
+# 23/02/01-BL: qwt must be installed early due to its qt@5.14 dependency (5.15 otherwise)
 RUN source /spack/share/spack/setup-env.sh && \
     spack env create meshing-env &&\
     spack env activate meshing-env &&\
@@ -47,6 +48,7 @@ RUN source /spack/share/spack/setup-env.sh && \
     spack add vtk-maillage~opengl2+qt~mpi &&\
     spack add cgns~mpi &&\
     spack add swig &&\
+    spack add qwt &&\
     spack concretize &&\
     spack install &&\
     rm -rf /spack/var/spack/cache/*
