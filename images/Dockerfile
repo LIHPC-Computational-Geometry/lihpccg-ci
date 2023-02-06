@@ -48,7 +48,7 @@ RUN source /spack/share/spack/setup-env.sh &&\
     spack env create meshing-env &&\
     spack env activate meshing-env &&\
     spack add python@3 &&\
-    spack add qt+opengl &&\
+    spack add qt+opengl~examples &&\
     spack add hdf5+cxx &&\
     spack add opencascade@7.1.0+foundationclasses+dataexchange &&\
     spack add vtk-maillage~opengl2+qt &&\
