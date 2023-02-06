@@ -54,4 +54,5 @@ jobs:
         with:
             file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_${{ inputs.product }}
             push: true
-
+            tags: ${{ steps.meta.outputs.tags }}
+            labels: ${{ steps.meta.outputs.labels }}
