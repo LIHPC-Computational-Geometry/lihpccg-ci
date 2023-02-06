@@ -69,6 +69,7 @@ Then, you are in a terminal inside the container. Just test the execution of `xe
 Enter CTRL-D to quit the container.
 
 **Note:** Perhaps you will encounter the following (not yet explained) error: 
+
     MESA: error: Failed to query drm device.
     libGL error: glx: failed to create dri3 screen
     libGL error: failed to load driver: iris
@@ -78,6 +79,7 @@ Enter CTRL-D to quit the container.
         Segment id in failed request:  0x1200005
         Serial number of failed request:  51
     Current serial number in output stream:  52
+
 In this case, add the `--device /dev/dri` argument when running the container.
 
 # Using the container in VSCode
