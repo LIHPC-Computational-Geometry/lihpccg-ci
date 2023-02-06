@@ -32,25 +32,31 @@ RUN git clone --depth=1 -b v${SPACK_VERSION} https://github.com/spack/spack.git 
     cp spack_recipes_meshing/supersede_repo/packages/opencascade/*.* /spack/var/spack/repos/builtin/packages/opencascade &&\
     cp -r spack_recipes_meshing/supersede_repo/packages/vtk-maillage /spack/var/spack/repos/builtin/packages
 
-RUN source /spack/share/spack/setup-env.sh && \
-    spack config --scope site add 'packages:all:target:[x86_64]' && \
-    spack compiler find && \
+# spack config without mpi should be possible
+RUN source /spack/share/spack/setup-env.sh &&\
+    spack config --scope site add 'packages:all:target:[x86_64]' &&\
+# 02/23: mgx does not compile MPI
+#    spack config --scope site add 'packages:all:variants:~mpi' &&\
+    spack compiler find &&\
     spack external find cmake
 
 RUN sed -i 's#"${ARCHITECTURE}/${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH}"#"${PACKAGE}-${VERSION}"#g' spack/etc/spack/defaults/config.yaml
 #==========================================
-# 23/02/01-BL: qwt must be installed early due to its qt@5.14 dependency (5.15 otherwise)
-RUN source /spack/share/spack/setup-env.sh && \
+# 2023/02/01-BL: qwt must be installed early due to its qt@5.14 dependency (5.15 otherwise)
+# 2023/02/03-BL: @7.1.0+foundationclasses+dataexchange added on opencascade for mgx
+RUN source /spack/share/spack/setup-env.sh &&\
     spack env create meshing-env &&\
     spack env activate meshing-env &&\
     spack add python@3 &&\
     spack add qt+opengl &&\
-    spack add hdf5+cxx~mpi &&\
-    spack add opencascade &&\
-    spack add vtk-maillage~opengl2+qt~mpi &&\
-    spack add cgns~mpi &&\
+    spack add hdf5+cxx &&\
+    spack add opencascade@7.1.0+foundationclasses+dataexchange &&\
+    spack add vtk-maillage~opengl2+qt &&\
+    spack add cgns &&\
     spack add swig &&\
     spack add qwt &&\
+    spack add doxygen &&\
+    spack add openmpi &&\
     spack concretize &&\
     spack install &&\
     rm -rf /spack/var/spack/cache/*
