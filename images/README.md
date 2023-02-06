@@ -68,6 +68,18 @@ Then, you are in a terminal inside the container. Just test the execution of `xe
 
 Enter CTRL-D to quit the container.
 
+**Note:** Perhaps you will encounter the following (not yet explained) error: 
+    MESA: error: Failed to query drm device.
+    libGL error: glx: failed to create dri3 screen
+    libGL error: failed to load driver: iris
+    X Error of failed request:  BadShmSeg (invalid shared segment parameter)
+        Major opcode of failed request:  130 (MIT-SHM)
+        Minor opcode of failed request:  3 (X_ShmPutImage)
+        Segment id in failed request:  0x1200005
+        Serial number of failed request:  51
+    Current serial number in output stream:  52
+In this case, add the `--device /dev/dri` argument when running the container.
+
 # Using the container in VSCode
 
 In the following use cases, we have a `lihpccg` directory on our computer, containing a git clone of all (or a subset) of the [lihpccg GitHub](https://github.com/LIHPC-Computational-Geometry) projects. We consider that the `lihpccg` directory will be our VSCode root folder.
