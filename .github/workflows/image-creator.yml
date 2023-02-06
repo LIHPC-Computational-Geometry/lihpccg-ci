@@ -3,23 +3,19 @@ name: 'Image Creator'
 on:
   workflow_dispatch:
     inputs:
-      mgx:
-        description: 'Builg mgx image'
+      product:
+        description: 'Product'
         required: true
-        type: boolean
-      gmds:
-        description: 'Build gmds image'
-        required: true
-        type: boolean
+        default: 'mgx'
+        type: choice
+        options:
+        - mgx
+        - gmds
 
 env:
   REGISTRY: 'ghcr.io'
   USER_NAME: 'lihpc'
   DOCKERFILE_PATH: './images'
-  if: ${{ inputs.mgx }}
-    PRODUCT_NAME: 'mgx'
-  if: ${{ inputs.gmds }}
-    PRODUCT_NAME: 'gmds'
 
 jobs:
   build-and-push:
@@ -44,18 +40,18 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.USER_NAME }}/${{ env.PRODUCT_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.USER_NAME }}/${{ inputs.product }}
           labels: |
             org.opencontainers.image.title=lihpccg
-            org.opencontainers.image.description=Image to build/install/run ${{ env.PRODUCT_NAME }}
+            org.opencontainers.image.description=Image to build/install/run ${{ inputs.product }}
             org.opencontainers.image.vendor=CEA
           tags: |
-            type=raw, ${{ env.PRODUCT_NAME }}_latest
-            type=raw, ${{ env.PRODUCT_NAME }}_{{date 'YYYYMMDD'}}
+            type=raw, ${{ inputs.product }}_latest
+            type=raw, ${{ inputs.product }}_{{date 'YYYYMMDD'}}
 
       - name: Build and push Docker image for mgx
         uses: docker/build-push-action@v3
         with:
-            file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_${{ env.PRODUCT_NAME }}
+            file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_${{ inputs.product }}
             push: true
 
