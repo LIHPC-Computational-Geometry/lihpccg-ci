@@ -16,6 +16,10 @@ env:
   REGISTRY: 'ghcr.io'
   USER_NAME: 'lihpc'
   DOCKERFILE_PATH: './images'
+  if: ${{ inputs.mgx }}
+    PRODUCT_NAME: 'mgx'
+  if: ${{ inputs.gmds }}
+    PRODUCT_NAME: 'gmds'
 
 jobs:
   build-and-push:
@@ -36,16 +40,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.USER_NAME }}/${{ env.PRODUCT_NAME }}
+          labels: |
+            org.opencontainers.image.title=lihpccg
+            org.opencontainers.image.description=Image to build/install/run ${{ env.PRODUCT_NAME }}
+            org.opencontainers.image.vendor=CEA
+          tags: |
+            type=raw, ${{ env.PRODUCT_NAME }}_latest
+            type=raw, ${{ env.PRODUCT_NAME }}_{{date 'YYYYMMDD'}}
+
       - name: Build and push Docker image for mgx
-        if: ${{ inputs.mgx }}
         uses: docker/build-push-action@v3
         with:
-            file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_mgx
+            file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_${{ env.PRODUCT_NAME }}
             push: true
 
-      - name: Build and push Docker image for gmds
-        if: ${{ inputs.gmds }}
-        uses: docker/build-push-action@v3
-        with:
-            file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_gmds
-            push: true
