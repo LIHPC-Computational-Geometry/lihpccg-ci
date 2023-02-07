@@ -1,4 +1,4 @@
-name: 'lihpccg base image creator'
+name: 'base image creator'
 
 on:
   workflow_dispatch:
