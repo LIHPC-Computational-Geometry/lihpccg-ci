@@ -19,7 +19,7 @@ env:
 
 jobs:
   build-and-push:
-    name: U22.04-S0.19-mgx
+    name: u22.04-s0.19-${{ inputs.product }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -40,7 +40,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.USER_NAME }}/${{ inputs.product }}
+          images: ${{ env.REGISTRY }}/${{ env.USER_NAME }}/u22.04-s0.19-${{ inputs.product }}
           labels: |
             org.opencontainers.image.title=lihpccg
             org.opencontainers.image.description=Image to build/install/run ${{ inputs.product }}
