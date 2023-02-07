@@ -1,16 +1,25 @@
-name: 'base image creator'
+name: 'Image Creator'
 
 on:
   workflow_dispatch:
+    inputs:
+      product:
+        description: 'Product'
+        required: true
+        default: 'base'
+        type: choice
+        options:
+        - base
+        - mgx
 
 env:
   REGISTRY: 'ghcr.io'
-  USER_NAME: 'lihpc'
+  USER_NAME: 'LIHPC-Computational-Geometry'
   DOCKERFILE_PATH: './images'
 
 jobs:
   build-and-push:
-    name: u22.04-s0.19-base
+    name: ${{ inputs.product }}-image
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -31,19 +40,20 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.USER_NAME }}/u22.04-s0.19-base
+          images: ${{ env.REGISTRY }}/${{ env.USER_NAME }}/${{ inputs.product }}-image
           labels: |
             org.opencontainers.image.title=lihpccg
-            org.opencontainers.image.description=Base image for lihpccg product images
+            org.opencontainers.image.description=${{ inputs.product }} image
             org.opencontainers.image.vendor=CEA
           tags: |
-            type=raw, u22.04-s0.19-base-latest
-            type=raw, u22.04-s0.19-base-{{date 'YYYYMMDD'}}
+            type=raw, ${{ inputs.product }}-latest
+            type=raw, ${{ inputs.product }}-{{date 'YYYYMMDD'}}
+            type=raw, ${{ inputs.product }}-u22.04-s0.19
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
-            file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_base
+            file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_${{ inputs.product }}
             push: true
             tags: ${{ steps.meta.outputs.tags }}
             labels: ${{ steps.meta.outputs.labels }}
