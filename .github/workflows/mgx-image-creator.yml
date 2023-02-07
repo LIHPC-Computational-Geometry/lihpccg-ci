@@ -49,7 +49,7 @@ jobs:
             type=raw, ${{ inputs.product }}_latest
             type=raw, ${{ inputs.product }}_{{date 'YYYYMMDD'}}
 
-      - name: Build and push Docker image for mgx
+      - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
             file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_${{ inputs.product }}
