@@ -22,7 +22,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # 02/23: pkg-config added. Used by gts
 # 02/23: lsb-release added. Used by mgx start script.
 RUN apt update &&\
-    apt install -y build-essential cmake python3 python3-distutils python3-venv unzip zip curl git libxt-dev libgl-dev gfortran autoconf pkg-config doxygen lsb-release &&\
+    apt install -y build-essential cmake python3 python3-distutils python3-venv unzip zip curl git libxt-dev libgl-dev gfortran autoconf pkg-config lsb-release &&\
     apt clean &&\
     rm -rf /var/lib/apt/lists/*
 #==========================================
@@ -39,7 +39,7 @@ RUN source /spack/share/spack/setup-env.sh &&\
 # 02/23: mgx needs mpi
     spack config --scope site add 'packages:all:variants:+mpi' &&\
     spack compiler find &&\
-    spack external find cmake pkg-config doxygen automake autoconf flex perl curl python
+    spack external find cmake
 
 RUN sed -i 's#"${ARCHITECTURE}/${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH}"#"${PACKAGE}-${VERSION}"#g' spack/etc/spack/defaults/config.yaml
 #==========================================
@@ -48,6 +48,7 @@ RUN sed -i 's#"${ARCHITECTURE}/${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSI
 RUN source /spack/share/spack/setup-env.sh &&\
     spack env create meshing-env &&\
     spack env activate meshing-env &&\
+    spack add python@3 &&\
     spack add qt+opengl~examples &&\
     spack add hdf5+cxx &&\
     spack add opencascade@7.1.0+foundationclasses+dataexchange &&\
@@ -55,6 +56,8 @@ RUN source /spack/share/spack/setup-env.sh &&\
     spack add cgns &&\
     spack add swig &&\
     spack add qwt &&\
+    spack add doxygen &&\
+    spack add openmpi &&\
     spack concretize &&\
     spack install &&\
     rm -rf /spack/var/spack/cache/*
