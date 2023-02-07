@@ -1,4 +1,4 @@
-name: 'Image Creator'
+name: 'mgx image creator'
 
 on:
   workflow_dispatch:
