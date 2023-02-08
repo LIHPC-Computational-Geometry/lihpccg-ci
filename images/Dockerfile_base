@@ -28,15 +28,14 @@ RUN apt update &&\
 #==========================================
 RUN git clone --depth=1 -b v${SPACK_VERSION} https://github.com/spack/spack.git &&\
     git clone --depth=1 https://github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git &&\
-    cp spack_recipes_meshing/config/packages.yaml /spack/etc/spack/ &&\
-    cp spack_recipes_meshing/supersede_repo/packages/petsc/*.* /spack/var/spack/repos/builtin/packages/petsc &&\
-    cp spack_recipes_meshing/supersede_repo/packages/opencascade/*.* /spack/var/spack/repos/builtin/packages/opencascade &&\
-    cp -r spack_recipes_meshing/supersede_repo/packages/vtk-maillage /spack/var/spack/repos/builtin/packages
+    cp spack_recipes_meshing/config/packages.yaml /spack/etc/spack/
 
 # spack config without mpi should be possible
 RUN source /spack/share/spack/setup-env.sh &&\
+    spack repo add ./spack_recipes_meshing/meshing_repo &&\
+    spack repo add ./spack_recipes_meshing/supersede_repo &&\
     spack config --scope site add 'packages:all:target:[x86_64]' &&\
-# 02/23: mgx needs mpi
+    # 02/23: mgx needs mpi
     spack config --scope site add 'packages:all:variants:+mpi' &&\
     spack compiler find &&\
     spack external find cmake
