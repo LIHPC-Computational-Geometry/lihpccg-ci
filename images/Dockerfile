@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 #==========================================
 # METADATA OF THE IMAGE
-LABEL description "base image" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
+LABEL description "mgx image" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
 #==========================================
 ARG SPACK_VERSION=0.19.0
 # Do not use /dev as the HOME if you use containers in vscode
@@ -16,11 +16,6 @@ SHELL ["/bin/bash", "-c"]
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #==========================================
-# 01/23: libxt-dev has been added to compile VTK.
-#        Error msg without libxt-dev: "X11_Xt_LIB could not be found. Required for VTK X lib."
-# 02/23: autoconf added. Used by gmds during build.
-# 02/23: pkg-config added. Used by gts
-# 02/23: lsb-release added. Used by mgx start script.
 RUN apt update &&\
     apt install -y build-essential cmake python3 python3-distutils python3-venv unzip zip curl git libxt-dev libgl-dev gfortran autoconf pkg-config lsb-release &&\
     apt clean &&\
@@ -28,37 +23,20 @@ RUN apt update &&\
 #==========================================
 RUN git clone --depth=1 -b v${SPACK_VERSION} https://github.com/spack/spack.git &&\
     git clone --depth=1 https://github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git &&\
-    cp spack_recipes_meshing/config/packages.yaml /spack/etc/spack/ &&\
-    cp spack_recipes_meshing/supersede_repo/packages/petsc/*.* /spack/var/spack/repos/builtin/packages/petsc &&\
-    cp spack_recipes_meshing/supersede_repo/packages/opencascade/*.* /spack/var/spack/repos/builtin/packages/opencascade &&\
-    cp -r spack_recipes_meshing/supersede_repo/packages/vtk-maillage /spack/var/spack/repos/builtin/packages
+    cp spack_recipes_meshing/config/packages.yaml /spack/etc/spack/
 
-# spack config without mpi should be possible
 RUN source /spack/share/spack/setup-env.sh &&\
+    spack repo add ./spack_recipes_meshing/meshing_repo &&\
+    spack repo add ./spack_recipes_meshing/supersede_repo &&\
     spack config --scope site add 'packages:all:target:[x86_64]' &&\
-# 02/23: mgx needs mpi
-    spack config --scope site add 'packages:all:variants:+mpi' &&\
     spack compiler find &&\
     spack external find cmake
 
-RUN sed -i 's#"${ARCHITECTURE}/${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH}"#"${PACKAGE}-${VERSION}"#g' spack/etc/spack/defaults/config.yaml
 #==========================================
-# 2023/02/01-BL: qwt must be installed early due to its qt@5.14 dependency (5.15 otherwise)
-# 2023/02/03-BL: @7.1.0+foundationclasses+dataexchange added on opencascade for mgx
 RUN source /spack/share/spack/setup-env.sh &&\
     spack env create meshing-env &&\
     spack env activate meshing-env &&\
-    spack add python@3 &&\
-    spack add qt+opengl~examples &&\
-    spack add hdf5+cxx &&\
-    spack add opencascade@7.1.0+foundationclasses+dataexchange &&\
-    spack add vtk-maillage~opengl2+qt &&\
-    spack add cgns &&\
-    spack add swig &&\
-    spack add qwt &&\
-    spack add doxygen &&\
-    spack add openmpi &&\
-    spack concretize &&\
-    spack install &&\
+    spack add mgx~smooth3d^vtk-maillage~opengl2+qt &&\
+    spack install --no-checksum &&\
     rm -rf /spack/var/spack/cache/*
 #==========================================

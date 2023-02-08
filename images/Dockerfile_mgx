@@ -1,40 +1,15 @@
 #============== OS LAYER ==================
-# In ubuntu:20.4 the Open GL version is too old to execute in container
-# Ubuntu 22.04 allows to execute glxgears in a docker container
-FROM ubuntu:22.04
+FROM base-image
 #==========================================
 # METADATA OF THE IMAGE
-LABEL description "Build env" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
-#==========================================
-ARG SPACK_VERSION=0.19.0
-# Do not use /dev as the HOME if you use containers in vscode
-# /dev is too small to store .vscode-server directory containing user preferences
-# ENV HOME /dev
+LABEL description "mgx image based on base image" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
 #==========================================
 SHELL ["/bin/bash", "-c"]
 #==========================================
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #==========================================
-RUN apt update &&\
-    apt install -y build-essential cmake python3 python3-distutils python3-venv unzip zip curl git libxt-dev libgl-dev gfortran autoconf pkg-config lsb-release &&\
-    apt clean &&\
-    rm -rf /var/lib/apt/lists/*
-#==========================================
-RUN git clone --depth=1 -b v${SPACK_VERSION} https://github.com/spack/spack.git &&\
-    git clone --depth=1 https://github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git &&\
-    cp spack_recipes_meshing/config/packages.yaml /spack/etc/spack/
-
 RUN source /spack/share/spack/setup-env.sh &&\
-    spack repo add ./spack_recipes_meshing/meshing_repo &&\
-    spack repo add ./spack_recipes_meshing/supersede_repo &&\
-    spack config --scope site add 'packages:all:target:[x86_64]' &&\
-    spack compiler find &&\
-    spack external find cmake
-
-#==========================================
-RUN source /spack/share/spack/setup-env.sh &&\
-    spack env create meshing-env &&\
     spack env activate meshing-env &&\
     spack add mgx~smooth3d^vtk-maillage~opengl2+qt &&\
     spack install --no-checksum &&\
