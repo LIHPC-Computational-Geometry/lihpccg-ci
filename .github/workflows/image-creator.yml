@@ -46,9 +46,9 @@ jobs:
             org.opencontainers.image.description=${{ inputs.product }} image
             org.opencontainers.image.vendor=CEA
           tags: |
-            type=raw, ${{ inputs.product }}-latest
-            type=raw, ${{ inputs.product }}-{{date 'YYYYMMDD'}}
-            type=raw, ${{ inputs.product }}-u22.04-s0.19
+            type=raw, latest
+            type=raw, {{date 'YYYYMMDD'}}
+            type=raw, u22.04-s0.19
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
