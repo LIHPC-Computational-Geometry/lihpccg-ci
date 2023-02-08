@@ -1,5 +1,5 @@
 #============== OS LAYER ==================
-FROM ghcr.io/lihpc-computational-geometry/base-image:base-latest
+FROM ghcr.io/lihpc-computational-geometry/base-image:latest
 #==========================================
 # METADATA OF THE IMAGE
 LABEL description "mgx image based on base image" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
