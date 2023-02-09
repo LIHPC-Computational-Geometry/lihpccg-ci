@@ -35,8 +35,6 @@ RUN source /spack/share/spack/setup-env.sh &&\
     spack repo add ./spack_recipes_meshing/meshing_repo &&\
     spack repo add ./spack_recipes_meshing/supersede_repo &&\
     spack config --scope site add 'packages:all:target:[x86_64]' &&\
-    # 02/23: mgx needs mpi
-    spack config --scope site add 'packages:all:variants:+mpi' &&\
     spack compiler find &&\
     spack external find cmake
 
@@ -49,9 +47,9 @@ RUN source /spack/share/spack/setup-env.sh &&\
     spack env activate meshing-env &&\
     spack add python@3 &&\
     spack add qt+opengl~examples &&\
-    spack add hdf5+cxx &&\
+    spack add hdf5+cxx~mpi &&\
     spack add opencascade@7.1.0+foundationclasses+dataexchange &&\
-    spack add vtk-maillage~opengl2+qt &&\
+    spack add vtk-maillage+mpi~opengl2+qt &&\
     spack add cgns &&\
     spack add swig &&\
     spack add qwt &&\
