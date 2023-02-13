@@ -1,0 +1,92 @@
+#============== OS LAYER cgcore=======
+FROM ghcr.io/lihpc-computational-geometry/cmake-cgcore:latest
+#==========================================
+# METADATA OF THE IMAGE
+LABEL description "Mgx image based on cmake core image" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
+#==========================================
+SHELL ["/bin/bash", "-c"]
+#==========================================
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+#==========================================
+WORKDIR /containerws
+RUN mkdir src && mkdir build && mkdir install
+ARG GH_BASE=https://github.com/LIHPC-Computational-Geometry/
+ARG PATCH_BASE=https://raw.githubusercontent.com/LIHPC-Computational-Geometry/spack_recipes_meshing/main/supersede_repo/packages
+ARG INSTALL_DIR=/containerws/install
+ARG CMAKE_BUILD_PARALLEL_LEVEL=4
+#==========================================
+ARG PRJ=tkutil
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+# par defaut python2 => pb d'include avec cmake sans arg... passer à 3
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DUSE_PYTHON_3:BOOL=ON
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=qtutil
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_PREFIX_PATH=${INSTALL_DIR}/tkutil -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=lima
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=pythonutil
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_PREFIX_PATH=${INSTALL_DIR}/tkutil -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DUSE_PYTHON_3:BOOL=ON
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=preferences
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/tkutil;${INSTALL_DIR}/qtutil" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=qualif
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_PREFIX_PATH=${INSTALL_DIR}/lima -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=qwtcharts
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/tkutil;${INSTALL_DIR}/qtutil" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=gmds072
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=gmdscea
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/gmds072;${INSTALL_DIR}/lima" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=qtpython
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/tkutil;${INSTALL_DIR}/qtutil;${INSTALL_DIR}/pythonutil" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DUSE_PYTHON_3:BOOL=ON
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=triton2
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/gmds072;${INSTALL_DIR}/gmdscea;${INSTALL_DIR}/lima" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=vtkcontrib
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DVTK_9:BOOL=ON -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=qtvtk
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DVTK_9:BOOL=ON -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/vtkcontrib;${INSTALL_DIR}/qtutil;${INSTALL_DIR}/tkutil" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=qqualif
+RUN git clone ${GH_BASE}/${PRJ} src/${PRJ}
+RUN cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/tkutil" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ}
+RUN cmake --build build/${PRJ} --target install
+#==========================================
+
+
+

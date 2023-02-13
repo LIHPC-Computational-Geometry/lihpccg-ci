@@ -1,0 +1,67 @@
+#============== OS LAYER ==================
+# In ubuntu:20.4 the Open GL version is too old to execute in container
+# Ubuntu 22.04 allows to execute glxgears in a docker container
+FROM ubuntu:22.04
+#==========================================
+# METADATA OF THE IMAGE
+LABEL description "Computational geometry core image built with cmake" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
+#==========================================
+# Do not use /dev as the HOME if you use containers in vscode
+# /dev is too small to store .vscode-server directory containing user preferences
+# ENV HOME /dev
+#==========================================
+SHELL ["/bin/bash", "-c"]
+#==========================================
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+#==========================================
+RUN apt update &&\
+    apt install -y build-essential cmake python3 python3-distutils python3-venv unzip zip curl git libxt-dev libgl-dev gfortran autoconf pkg-config lsb-release &&\
+    apt install -y python3-dev swig doxygen qtbase5-dev libhdf5-dev libxerces-c-dev libqwt-qt5-dev libqt5x11extras5-dev &&\
+    apt clean &&\
+    rm -rf /var/lib/apt/lists/*
+#==========================================
+WORKDIR /containerws
+RUN mkdir src && mkdir build && mkdir install
+ARG GH_BASE=https://github.com/LIHPC-Computational-Geometry/
+ARG PATCH_BASE=https://raw.githubusercontent.com/LIHPC-Computational-Geometry/spack_recipes_meshing/main/supersede_repo/packages
+ARG INSTALL_DIR=/containerws/install
+ARG CMAKE_BUILD_PARALLEL_LEVEL=4
+#==========================================
+ARG PRJ=VTK-7.1.1
+RUN cd src &&\
+    curl -L -o ${PRJ}.tgz "https://www.vtk.org/files/release/7.1/VTK-7.1.1.tar.gz" &&\
+    tar xvfz ${PRJ}.tgz &&\
+    rm ${PRJ}.tgz  &&\
+    cd ${PRJ} &&\
+    curl -L -O ${PATCH_BASE}/vtk-maillage/vtk-maillage_qt515.patch &&\
+    patch -p1 < vtk-maillage_qt515.patch &&\
+    curl -L -O ${PATCH_BASE}/vtk-maillage/vtk-maillage_gcc10_hiddenvisibility.patch  &&\
+    patch -p1 < vtk-maillage_gcc10_hiddenvisibility.patch &&\
+    curl -L -O ${PATCH_BASE}/vtk-maillage/vtk-maillage_gcc11_const.patch &&\
+    patch -p1 < vtk-maillage_gcc11_const.patch  &&\
+    cd ../.. &&\
+    cmake -S src/${PRJ} -B build/${PRJ} -DMPI_HOME=/usr/lib/x86_64-linux-gnu/openmpi -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} \
+    -DCMAKE_BUILD_TYPE=Release -DModule_vtkFiltersParallelMPI:BOOL=ON -DModule_vtkIOExportOpenGL:BOOL=ON -DModule_vtkImagingOpenGL:BOOL=ON \
+    -DModule_vtkRenderingOpenGL:BOOL=ON -DModule_vtkIOExportOpenGL2:BOOL=OFF -DModule_vtkImagingOpenGL2:BOOL=OFF -DModule_vtkRenderingOpenGL2:BOOL=OFF \
+    -DModule_vtkGUISupportQtOpenGL:BOOL=OFF -DModule_vtkParallelMPI:BOOL=ON -DModule_vtkFiltersParallelMPI:BOOL=ON -DModule_vtkRenderingParallel:BOOL=ON \
+    -DVTK_USE_SYSTEM_GL2PS:BOOL=OFF -DVTK_RENDERING_BACKEND=OpenGL -DVTK_Group_Imaging:BOOL=ON -DVTK_Group_MPI:BOOL=ON -DVTK_Group_Qt:BOOL=ON \
+    -DVTK_Group_Rendering:BOOL=ON -DVTK_QT_VERSION=5 -DVTK_ALL_NEW_OBJECT_FACTORY=OFF -DVTK_DEBUG_LEAKS=OFF -DBUILD_DOCUMENTATION=OFF -DVTK_USE_X=ON \
+    -DVTK_PYTHON_VERSION=3 -DVTK_USE_OFFSCREEN=OFF -DVTK_OPENGL_HAS_OSMESA=OFF &&\
+    cmake --build build/${PRJ} --target install
+#==========================================
+ARG PRJ=occt-V7_1_0
+RUN cd src &&\
+    curl -L -o ${PRJ}.tgz "https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=refs/tags/V7_1_0;sf=tgz" &&\
+    tar xvfz ${PRJ}.tgz &&\
+    cd ${PRJ} &&\
+    curl -L -O ${PATCH_BASE}/opencascade/xlocale-7_1.patch &&\
+    patch -p1 < xlocale-7_1.patch &&\
+    curl -L -O ${PATCH_BASE}/opencascade/opencascade-7.1.0_a.patch &&\
+    patch -p1 < opencascade-7.1.0_a.patch &&\
+    cd ../.. &&\
+    cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
+    cmake --build build/${PRJ} --target install
+#==========================================
+
+
