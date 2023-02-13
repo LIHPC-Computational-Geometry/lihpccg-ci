@@ -12,7 +12,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR /containerws
 RUN mkdir src && mkdir build && mkdir install
 ARG GH_BASE=https://github.com/LIHPC-Computational-Geometry/
-ARG PATCH_BASE=https://raw.githubusercontent.com/LIHPC-Computational-Geometry/spack_recipes_meshing/main/supersede_repo/packages
 ARG INSTALL_DIR=/containerws/install
 ARG CMAKE_BUILD_PARALLEL_LEVEL=4
 #==========================================
