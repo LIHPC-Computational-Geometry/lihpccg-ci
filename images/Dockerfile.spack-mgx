@@ -5,6 +5,7 @@ FROM ubuntu:22.04
 #==========================================
 # METADATA OF THE IMAGE
 LABEL description "Mgx image built with spack" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
+LABEL org.opencontainers.image.source https://github.com/lihpc-computational-geometry/lihpccg-ci
 #==========================================
 ARG SPACK_VERSION=0.19.0
 # Do not use /dev as the HOME if you use containers in vscode
