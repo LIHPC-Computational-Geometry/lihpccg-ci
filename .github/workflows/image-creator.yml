@@ -42,7 +42,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.USER_NAME }}/${{ inputs.product }}-image
+          images: ${{ env.REGISTRY }}/${{ env.USER_NAME }}/${{ inputs.product }}
           labels: |
             org.opencontainers.image.title=lihpccg
             org.opencontainers.image.description=${{ inputs.product }} image
@@ -50,12 +50,11 @@ jobs:
           tags: |
             type=raw, latest
             type=raw, {{date 'YYYYMMDD'}}
-            type=raw, u22.04-s0.19
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
-            file: ${{ env.DOCKERFILE_PATH }}/Dockerfile_${{ inputs.product }}
+            file: ${{ env.DOCKERFILE_PATH }}/Dockerfile-${{ inputs.product }}
             push: true
             tags: ${{ steps.meta.outputs.tags }}
             labels: ${{ steps.meta.outputs.labels }}
