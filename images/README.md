@@ -56,31 +56,17 @@ You will build an image on your computer. Use the  `Dockerfile_x11ogl` provided 
 
 ## Run the container
 
-    podman run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --rm -it lihpccg/x11ogl bash
+    podman run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --device /dev/dri --rm -it lihpccg/x11ogl bash
 
 - `--rm` By default a container’s file system persists even after the container exits. This option automatically cleans up the container; helpful for running short-term processes.
 
-- `it` By default, the container runs and terminates. This option and `bash` at the end of the command opens a bash terminal inside the container.
+- `-it` By default, the container runs and terminates. This option and `bash` at the end of the command opens a bash terminal inside the container.
 
-- `-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY` Options needed to open the display when running X11 applications.
+- `-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --device /dev/dri` Options needed to open the display when running X11 applications.
 
 Then, you are in a terminal inside the container. Just test the execution of `xeyes` and `glxgears` and check that a window is displayed and that the application is active (eyes are moving and gears are turning).
 
 Enter CTRL-D to quit the container.
-
-**Note:** Perhaps you will encounter the following (not yet explained) error: 
-
-    MESA: error: Failed to query drm device.
-    libGL error: glx: failed to create dri3 screen
-    libGL error: failed to load driver: iris
-    X Error of failed request:  BadShmSeg (invalid shared segment parameter)
-        Major opcode of failed request:  130 (MIT-SHM)
-        Minor opcode of failed request:  3 (X_ShmPutImage)
-        Segment id in failed request:  0x1200005
-        Serial number of failed request:  51
-    Current serial number in output stream:  52
-
-In this case, add the `--device /dev/dri` argument when running the container.
 
 # Using the container in VSCode
 
