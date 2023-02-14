@@ -28,6 +28,13 @@ ARG PATCH_BASE=https://raw.githubusercontent.com/LIHPC-Computational-Geometry/sp
 ARG INSTALL_DIR=/containerws/install
 ARG CMAKE_BUILD_PARALLEL_LEVEL=4
 #==========================================
+ARG PRJ=qwt-6.1.5
+RUN curl -L "https://sourceforge.net/projects/qwt/files/qwt/6.1.5/qwt-6.1.5.tar.bz2" | tar jxv --directory src &&\
+    cd src/${PRJ} &&\
+    qmake qwt.pro &&\
+    make -j4 &&\
+    cd ../..
+#==========================================
 ARG PRJ=VTK-7.1.1
 RUN curl -L "https://www.vtk.org/files/release/7.1/VTK-7.1.1.tar.gz" | tar xz --directory src &&\
     cd src/${PRJ} &&\
@@ -58,5 +65,4 @@ RUN curl -L "https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=ref
     cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
     cmake --build build/${PRJ} --target install
 #==========================================
-
 
