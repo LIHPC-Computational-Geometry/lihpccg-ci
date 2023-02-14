@@ -29,7 +29,7 @@ ARG INSTALL_DIR=/containerws/install
 ARG CMAKE_BUILD_PARALLEL_LEVEL=4
 #==========================================
 ARG PRJ=VTK-7.1.1
-RUN curl -L -o ${PRJ}.tar.gz "https://www.vtk.org/files/release/7.1/VTK-7.1.1.tar.gz" | tar xz --directory src &&\
+RUN curl -L "https://www.vtk.org/files/release/7.1/VTK-7.1.1.tar.gz" | tar xz --directory src &&\
     cd src/${PRJ} &&\
     curl -L -O ${PATCH_BASE}/vtk-maillage/vtk-maillage_qt515.patch &&\
     patch -p1 < vtk-maillage_qt515.patch &&\
@@ -48,8 +48,8 @@ RUN curl -L -o ${PRJ}.tar.gz "https://www.vtk.org/files/release/7.1/VTK-7.1.1.ta
     cmake --build build/${PRJ} --target install
 #==========================================
 ARG PRJ=occt-V7_1_0
-RUN curl -L -o ${PRJ}.tar.gz "https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=refs/tags/V7_1_0;sf=tgz" | tar xz --directory src &&\
-    cd ${PRJ} &&\
+RUN curl -L "https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=refs/tags/V7_1_0;sf=tgz" | tar xz --directory src &&\
+    cd src/${PRJ} &&\
     curl -L -O ${PATCH_BASE}/opencascade/xlocale-7_1.patch &&\
     patch -p1 < xlocale-7_1.patch &&\
     curl -L -O ${PATCH_BASE}/opencascade/opencascade-7.1.0_a.patch &&\
