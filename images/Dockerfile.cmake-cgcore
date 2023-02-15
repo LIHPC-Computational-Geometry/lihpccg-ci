@@ -38,14 +38,16 @@ RUN curl -L https://sourceforge.net/projects/qwt/files/qwt/6.1.5/${PRJ}.tar.bz2 
 ARG PRJ=mesquite-2.3.0
 RUN curl -L https://software.sandia.gov/mesquite/${PRJ}.tar.gz | tar xz --directory src &&\
     cd src/${PRJ} &&\
-    ./configure --prefix=${INSTALL_DIR}/${PRJ} --without-cppunit &&\
+    ./configure --prefix=${INSTALL_DIR}/${PRJ} --without-cppunit --with-pic &&\
     make -j4 &&\
     make install &&\
     cd ../..
 #==========================================
+# -DHDF5_NEED_MPI=true works only if libhdf5-dev is not installed
+# but, in this case, lima does not compile
 ARG PRJ=CGNS-4.3.0
 RUN curl -L https://github.com/CGNS/CGNS/archive/v4.3.0.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ} -B build/${PRJ} -DHDF5_NEED_MPI=true -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
+    cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
     cmake --build build/${PRJ} --target install
 #==========================================
 ARG PRJ=VTK-7.1.1
