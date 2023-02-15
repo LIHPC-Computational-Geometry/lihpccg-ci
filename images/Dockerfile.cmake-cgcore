@@ -45,7 +45,6 @@ RUN curl -L https://software.sandia.gov/mesquite/${PRJ}.tar.gz | tar xz --direct
 #==========================================
 ARG PRJ=CGNS-4.3.0
 RUN curl -L https://github.com/CGNS/CGNS/archive/v4.3.0.tar.gz | tar xz --directory src &&\
-    cd src/${PRJ} &&\
     cmake -S src/${PRJ} -B build/${PRJ} -DHDF5_NEED_MPI=true -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
     cmake --build build/${PRJ} --target install
 #==========================================
