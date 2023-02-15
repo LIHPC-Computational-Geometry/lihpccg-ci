@@ -12,7 +12,7 @@ This repository contains 5 docker images (Packages section - right of the main p
 
 ## Dependencies
 
-The following graph shows the dependencies between LIHPC-CG products.
+The following graph shows the dependencies between LIHPC-CG projects.
 
 This graph represents the explicit dependencies of the `cmake-cgcore-mgx` docker image.
 
