@@ -50,4 +50,5 @@ digraph LIHPCCGProjectDependencies {
   mgx->qtpython
   mgx->CGNS
   mgx->Mesquite
+  mgx->qtvtk
 }
