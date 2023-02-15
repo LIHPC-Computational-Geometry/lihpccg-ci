@@ -16,7 +16,7 @@ The following graph shows the dependencies between LIHPC-CG projects.
 
 This graph represents the explicit dependencies of the `cmake-cgcore-mgx` docker image.
 
-The square nodes are external products not installed with `apt install`: they are downloaded and installed in `cmake-cgcore` docker image.
-The round nodes are LIHPC-CG projects.
+The red square nodes are external products not installed with `apt install`: they are downloaded and installed in `cmake-cgcore` docker image.
+The black round nodes are LIHPC-CG projects.
 
 ![Dependencies Graph Image](cg-dependencies.png)
