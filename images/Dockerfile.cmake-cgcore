@@ -17,8 +17,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #==========================================
 RUN apt update &&\
     apt install -y build-essential cmake python3 python3-distutils python3-venv unzip zip curl git libxt-dev libgl-dev gfortran autoconf pkg-config lsb-release &&\
-    apt install -y openmpi-bin libopenmpi-dev python3-dev swig doxygen libhdf5-dev libxerces-c-dev qtbase5-dev libqwt-qt5-dev libqt5x11extras5-dev qttools5-dev &&\
-    apt install -y tcllib tklib tcl-dev tk-dev libfreetype-dev libfreeimage-dev rapidjson-dev libdraco-dev libxmu-dev libxi-dev &&\
+    apt install -y openmpi-bin libopenmpi-dev python3-dev swig doxygen libhdf5-mpi-dev libxerces-c-dev qtbase5-dev libqwt-qt5-dev libqt5x11extras5-dev qttools5-dev &&\
+    apt install -y tcllib tklib tcl-dev tk-dev libfreetype-dev libfreeimage-dev rapidjson-dev libdraco-dev libxmu-dev libxi-dev libgts-dev libqt5svg5-dev &&\
     apt clean &&\
     rm -rf /var/lib/apt/lists/*
 #==========================================
@@ -29,14 +29,28 @@ ARG INSTALL_DIR=/containerws/install
 ARG CMAKE_BUILD_PARALLEL_LEVEL=4
 #==========================================
 ARG PRJ=qwt-6.1.5
-RUN curl -L "https://sourceforge.net/projects/qwt/files/qwt/6.1.5/qwt-6.1.5.tar.bz2" | tar jxv --directory src &&\
+RUN curl -L https://sourceforge.net/projects/qwt/files/qwt/6.1.5/${PRJ}.tar.bz2 | tar jxv --directory src &&\
     cd src/${PRJ} &&\
     qmake qwt.pro &&\
     make -j4 &&\
     cd ../..
 #==========================================
+ARG PRJ=mesquite-2.3.0
+RUN curl -L https://software.sandia.gov/mesquite/${PRJ}.tar.gz | tar xz --directory src &&\
+    cd src/${PRJ} &&\
+    ./configure --prefix=${INSTALL_DIR}/${PRJ} --without-cppunit &&\
+    make -j4 &&\
+    make install &&\
+    cd ../..
+#==========================================
+ARG PRJ=CGNS-4.3.0
+RUN curl -L https://github.com/CGNS/CGNS/archive/v4.3.0.tar.gz | tar xz --directory src &&\
+    cd src/${PRJ} &&\
+    cmake -S src/${PRJ} -B build/${PRJ} -DHDF5_NEED_MPI=true -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
+    cmake --build build/${PRJ} --target install
+#==========================================
 ARG PRJ=VTK-7.1.1
-RUN curl -L "https://www.vtk.org/files/release/7.1/VTK-7.1.1.tar.gz" | tar xz --directory src &&\
+RUN curl -L https://www.vtk.org/files/release/7.1/${PRJ}.tar.gz | tar xz --directory src &&\
     cd src/${PRJ} &&\
     curl -L -O ${PATCH_BASE}/vtk-maillage/vtk-maillage_qt515.patch &&\
     patch -p1 < vtk-maillage_qt515.patch &&\
