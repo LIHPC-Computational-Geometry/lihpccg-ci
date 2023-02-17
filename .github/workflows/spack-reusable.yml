@@ -42,7 +42,7 @@ jobs:
           # seems to be incorrect (see https://github.com/actions/runner/issues/2058)
           spack develop -p $GITHUB_WORKSPACE --no-clone ${{ github.event.repository.name }}@999
           spack install --no-checksum
-
+      
       - name: Test C++ lib install
         shell: bash
         run: |
