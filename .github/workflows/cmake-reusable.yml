@@ -45,6 +45,7 @@ jobs:
       - name: Test C++ lib install
         shell: bash
         run: |
-          cmake -S test_link -B build -DCMAKE_PREFIX_PATH=install
-          cmake --build test_link_build
-          ./test_link_build/ctest
+          cd test_link/
+          cmake -S . -B build -DCMAKE_PREFIX_PATH=../install
+          cmake --build build
+          ./build/ctest
