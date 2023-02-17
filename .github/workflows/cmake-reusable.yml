@@ -1,0 +1,52 @@
+name: Reusable Cmake workflow 
+
+on:
+  workflow_call:
+    inputs:
+      run-tests:
+        required: true
+        type: boolean
+      cmake-options:
+        required: false
+        type: string
+
+env:
+  QT_QPA_PLATFORM: offscreen
+
+jobs:
+  main:
+    name: CMake build & run
+    # The CMake configure and build commands are platform agnostic and should work equally
+    # well on Linux, Windows or Mac.
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/lihpc-computational-geometry/cmake-cgcore-mgx:latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2 # seems to be needed by codecov
+          submodules: recursive
+
+      - name: Build with Cmake
+        shell: bash
+        run: |
+          cmake ${{ inputs.cmake-options }} -DCMAKE_INSTALL_PREFIX=install -S ${{ github.event.repository.name }} -B build
+          cmake --build build
+
+      - name: Run unit tests
+        if: ${{ inputs.run-tests }}
+        shell: bash
+        run: |
+          make test
+
+      - name: Test C++ lib install
+        shell: bash
+        run: |
+          cd test_link/
+          cmake -S . -B build_exe
+          cmake --build build_exe
+          cd build_exe
+          ctest
