@@ -33,7 +33,7 @@ jobs:
       - name: Build with Cmake
         shell: bash
         run: |
-          cmake ${{ inputs.cmake-options }} -DCMAKE_INSTALL_PREFIX=install -S ${{ github.event.repository.name }} -B build
+          cmake ${{ inputs.cmake-options }} -DCMAKE_INSTALL_PREFIX=install -S . -B build
           cmake --build build
 
       - name: Run unit tests
