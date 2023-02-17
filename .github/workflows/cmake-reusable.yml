@@ -48,4 +48,4 @@ jobs:
           cd test_link/
           cmake -S . -B build -DCMAKE_PREFIX_PATH=/${{ github.event.repository.name }}-install
           cmake --build build
-          ./build/ctest
+          ctest
