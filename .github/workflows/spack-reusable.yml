@@ -2,6 +2,8 @@ name: Reusable Spack workflow
 
 on:
   workflow_call:
+    inputs:
+      run-tests:
 
 env:
   QT_QPA_PLATFORM: offscreen
@@ -27,8 +29,9 @@ jobs:
         shell: bash
         run : |
           source /spack/share/spack/setup-env.sh
-          spack repo add /spack_recipes_meshing/meshing_repo
-          spack repo add /spack_recipes_meshing/supersede_repo
+          git clone --depth=1 https://github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git
+          spack repo add ./spack_recipes_meshing/meshing_repo
+          spack repo add ./spack_recipes_meshing/supersede_repo
 
       - name: Build and install with Spack
         shell: bash
