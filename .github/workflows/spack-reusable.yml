@@ -27,26 +27,29 @@ jobs:
         shell: bash
         run : |
           source /spack/share/spack/setup-env.sh
-          spack repo add /spack_recipes_meshing/meshing_repo
-          spack repo add /spack_recipes_meshing/supersede_repo
+          git clone --depth=1 https://github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git
+          spack repo add ./spack_recipes_meshing/meshing_repo
+          spack repo add ./spack_recipes_meshing/supersede_repo
 
       - name: Build and install with Spack
         shell: bash
         run: |
           source /spack/share/spack/setup-env.sh 
-          spack env activate meshing-env
+          spack env create ci-env
+          spack env activate ci-env
           # ${{ github.event.repository.name }} represents the name of the project
           spack add ${{ github.event.repository.name }}
           # we use GITHUB_WORKSPACE instead of github.Workspace because in containers it
           # seems to be incorrect (see https://github.com/actions/runner/issues/2058)
           spack develop -p $GITHUB_WORKSPACE --no-clone ${{ github.event.repository.name }}@999
-          spack install --no-checksum
+          spack concretize --reuse
+          spack install
 
       - name: Test C++ lib install
         shell: bash
         run: |
           source /spack/share/spack/setup-env.sh
-          spack env activate meshing-env
+          spack env activate ci-env
           spack load ${{ github.event.repository.name }}
           cd test_link/
           cmake -S . -B build_exe
