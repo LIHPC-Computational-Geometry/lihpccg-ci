@@ -23,14 +23,6 @@ jobs:
           fetch-depth: 2 # seems to be needed by codecov
           submodules: recursive
 
-      - name: Initialize the dev environment
-        shell: bash
-        run : |
-          source /spack/share/spack/setup-env.sh
-          git clone --depth=1 https://github.com/LIHPC-Computational-Geometry/spack_recipes_meshing.git
-          spack repo add ./spack_recipes_meshing/meshing_repo
-          spack repo add ./spack_recipes_meshing/supersede_repo
-
       - name: Build and install with Spack
         shell: bash
         run: |
