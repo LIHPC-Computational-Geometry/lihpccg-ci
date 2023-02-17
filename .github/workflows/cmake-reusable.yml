@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           cmake ${{ inputs.cmake-options }} -DCMAKE_INSTALL_PREFIX=/${{ github.event.repository.name }}-install -S . -B build
-          cmake --build build
+          cmake --build build --target install
 
       - name: Run unit tests
         if: ${{ inputs.run-tests }}
