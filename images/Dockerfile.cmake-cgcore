@@ -25,7 +25,7 @@ RUN apt update &&\
 WORKDIR /containerws
 RUN mkdir src && mkdir build && mkdir install
 ARG PATCH_BASE=https://raw.githubusercontent.com/LIHPC-Computational-Geometry/spack_recipes_meshing/main/supersede_repo/packages
-ARG INSTALL_DIR=/containerws/install
+ENV INSTALL_DIR=/containerws/install
 #==========================================
 RUN PRJ=qwt-6.1.5 &&\
     curl -L https://sourceforge.net/projects/qwt/files/qwt/6.1.5/${PRJ}.tar.bz2 | tar jxv --directory src &&\
