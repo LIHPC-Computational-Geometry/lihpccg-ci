@@ -33,7 +33,7 @@ jobs:
       - name: Build with Cmake
         shell: bash
         run: |
-          cmake --install-prefix=/${{ github.event.repository.name }}-install -S . -B build --preset=ci
+          cmake -S . -B build --preset=ci --install-prefix=/${{ github.event.repository.name }}-install
           cmake --build build --target install
 
       - name: Run unit tests
@@ -46,6 +46,8 @@ jobs:
         shell: bash
         run: |
           cd test_link/
-          cmake -S . -B build
+          cp ../CMakePresets.json .
+          # Do not use ${{ github.event.repository.name }}_ROOT variable: package names != project names (sometimes)
+          cmake -S . -B build --preset=ci -DCMAKE_PREFIX_PATH=/${{ github.event.repository.name }}-install
           cmake --build build
           ctest

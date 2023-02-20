@@ -26,17 +26,16 @@ WORKDIR /containerws
 RUN mkdir src && mkdir build && mkdir install
 ARG PATCH_BASE=https://raw.githubusercontent.com/LIHPC-Computational-Geometry/spack_recipes_meshing/main/supersede_repo/packages
 ARG INSTALL_DIR=/containerws/install
-ARG CMAKE_BUILD_PARALLEL_LEVEL=4
 #==========================================
-ARG PRJ=qwt-6.1.5
-RUN curl -L https://sourceforge.net/projects/qwt/files/qwt/6.1.5/${PRJ}.tar.bz2 | tar jxv --directory src &&\
+RUN PRJ=qwt-6.1.5 &&\
+    curl -L https://sourceforge.net/projects/qwt/files/qwt/6.1.5/${PRJ}.tar.bz2 | tar jxv --directory src &&\
     cd src/${PRJ} &&\
     qmake qwt.pro &&\
     make -j4 &&\
     cd ../..
 #==========================================
-ARG PRJ=mesquite-2.3.0
-RUN curl -L https://software.sandia.gov/mesquite/${PRJ}.tar.gz | tar xz --directory src &&\
+RUN PRJ=mesquite-2.3.0 &&\
+    curl -L https://software.sandia.gov/mesquite/${PRJ}.tar.gz | tar xz --directory src &&\
     cd src/${PRJ} &&\
     ./configure --prefix=${INSTALL_DIR}/${PRJ} --without-cppunit --with-pic &&\
     make -j4 &&\
@@ -45,13 +44,13 @@ RUN curl -L https://software.sandia.gov/mesquite/${PRJ}.tar.gz | tar xz --direct
 #==========================================
 # -DHDF5_NEED_MPI=true works only if libhdf5-dev is not installed
 # but, in this case, lima does not compile
-ARG PRJ=CGNS-4.3.0
-RUN curl -L https://github.com/CGNS/CGNS/archive/v4.3.0.tar.gz | tar xz --directory src &&\
+RUN PRJ=CGNS-4.3.0 &&\
+    curl -L https://github.com/CGNS/CGNS/archive/v4.3.0.tar.gz | tar xz --directory src &&\
     cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
-    cmake --build build/${PRJ} --target install
+    cmake --build build/${PRJ} --parallel 4 --target install
 #==========================================
-ARG PRJ=VTK-7.1.1
-RUN curl -L https://www.vtk.org/files/release/7.1/${PRJ}.tar.gz | tar xz --directory src &&\
+RUN PRJ=VTK-7.1.1 &&\
+    curl -L https://www.vtk.org/files/release/7.1/${PRJ}.tar.gz | tar xz --directory src &&\
     cd src/${PRJ} &&\
     curl -L -O ${PATCH_BASE}/vtk-maillage/vtk-maillage_qt515.patch &&\
     patch -p1 < vtk-maillage_qt515.patch &&\
@@ -67,10 +66,10 @@ RUN curl -L https://www.vtk.org/files/release/7.1/${PRJ}.tar.gz | tar xz --direc
     -DVTK_USE_SYSTEM_GL2PS:BOOL=OFF -DVTK_RENDERING_BACKEND=OpenGL -DVTK_Group_Imaging:BOOL=ON -DVTK_Group_MPI:BOOL=ON -DVTK_Group_Qt:BOOL=ON \
     -DVTK_Group_Rendering:BOOL=ON -DVTK_QT_VERSION=5 -DVTK_ALL_NEW_OBJECT_FACTORY=OFF -DVTK_DEBUG_LEAKS=OFF -DBUILD_DOCUMENTATION=OFF -DVTK_USE_X=ON \
     -DVTK_PYTHON_VERSION=3 -DVTK_USE_OFFSCREEN=OFF -DVTK_OPENGL_HAS_OSMESA=OFF &&\
-    cmake --build build/${PRJ} --target install
+    cmake --build build/${PRJ} --parallel 4 --target install
 #==========================================
-ARG PRJ=occt-V7_1_0
-RUN curl -L "https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=refs/tags/V7_1_0;sf=tgz" | tar xz --directory src &&\
+RUN PRJ=occt-V7_1_0 &&\
+    curl -L "https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=refs/tags/V7_1_0;sf=tgz" | tar xz --directory src &&\
     cd src/${PRJ} &&\
     curl -L -O ${PATCH_BASE}/opencascade/xlocale-7_1.patch &&\
     patch -p1 < xlocale-7_1.patch &&\
@@ -78,6 +77,6 @@ RUN curl -L "https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=ref
     patch -p1 < opencascade-7.1.0_a.patch &&\
     cd ../.. &&\
     cmake -S src/${PRJ} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
-    cmake --build build/${PRJ} --target install
+    cmake --build build/${PRJ} --parallel 4 --target install
 #==========================================
 

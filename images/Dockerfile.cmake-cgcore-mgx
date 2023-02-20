@@ -2,7 +2,7 @@
 FROM ghcr.io/lihpc-computational-geometry/cmake-cgcore:latest
 #==========================================
 # METADATA OF THE IMAGE
-LABEL description "Mgx image based on cmake core image" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
+LABEL description "Mgx image built from project releases and based on cmake-cgcore image" version="1.0" maintainer="Meshing team <lihpccg@gmail.com>"
 #==========================================
 SHELL ["/bin/bash", "-c"]
 #==========================================
@@ -10,100 +10,9 @@ ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #==========================================
 WORKDIR /containerws
-ARG GH_BASE=https://github.com/LIHPC-Computational-Geometry/
-ARG INSTALL_DIR=/containerws/install
-ARG CMAKE_BUILD_PARALLEL_LEVEL=4
+ENV INSTALL_DIR=/containerws/install
 #==========================================
-ARG PRJ=tkutil
-ARG VERSION=5.14.0
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DUSE_PYTHON_3:BOOL=ON &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=qtutil
-ARG VERSION=5.7.8
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH=${INSTALL_DIR}/tkutil -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DUSE_PYTHON_3:BOOL=ON &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=lima
-ARG VERSION=7.7.9
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=pythonutil
-ARG VERSION=5.6.6
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH=${INSTALL_DIR}/tkutil -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DUSE_PYTHON_3:BOOL=ON &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=preferences
-ARG VERSION=5.6.2
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/tkutil;${INSTALL_DIR}/qtutil" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DUSE_PYTHON_3:BOOL=ON &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=qualif
-ARG VERSION=2.3.5
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH=${INSTALL_DIR}/lima -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=qwtcharts
-ARG VERSION=4.4.13
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/tkutil;${INSTALL_DIR}/qtutil;/containerws/src/qwt-6.1.5" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=gmds072
-ARG VERSION=0.7.2
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=gmdscea
-ARG VERSION=2.0.0
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/gmds072;${INSTALL_DIR}/lima" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DCMAKE_POSITION_INDEPENDENT_CODE=ON &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=qtpython
-ARG VERSION=5.1.10
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/tkutil;${INSTALL_DIR}/qtutil;${INSTALL_DIR}/pythonutil" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DUSE_PYTHON_3:BOOL=ON &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=triton2
-ARG VERSION=1.0.0
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/gmds072;${INSTALL_DIR}/gmdscea;${INSTALL_DIR}/lima" -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DCMAKE_POSITION_INDEPENDENT_CODE=ON &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=vtkcontrib
-ARG VERSION=4.6.4
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH=${INSTALL_DIR}/VTK-7.1.1 -DVTK_7:BOOL=ON -DUSE_OPENGL_BACKEND:BOOL=ON -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=qtvtk
-ARG VERSION=7.14.8
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/vtkcontrib;${INSTALL_DIR}/qtutil;${INSTALL_DIR}/tkutil;${INSTALL_DIR}/VTK-7.1.1" -DQVTK_WIDGET:BOOL=ON -DUSE_OPENGL_BACKEND:BOOL=ON -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=qqualif
-ARG VERSION=3.9.1
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/tkutil;${INSTALL_DIR}/lima;${INSTALL_DIR}/qualif;${INSTALL_DIR}/qwtcharts;${INSTALL_DIR}/qtutil;${INSTALL_DIR}/gmds072" -DBUILD_GQGMDS:BOOL=ON -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} &&\
-    cmake --build build/${PRJ} --target install
-#==========================================
-ARG PRJ=mgx
-ARG VERSION=1.0.0
-RUN curl -L ${GH_BASE}/${PRJ}/archive/refs/tags/v${VERSION}.tar.gz | tar xz --directory src &&\
-    cmake -S src/${PRJ}-${VERSION} -B build/${PRJ} \
-    -DCMAKE_PREFIX_PATH="${INSTALL_DIR}/vtkcontrib;${INSTALL_DIR}/VTK-7.1.1;${INSTALL_DIR}/tkutil;${INSTALL_DIR}/preferences;${INSTALL_DIR}/pythonutil;${INSTALL_DIR}/occt-V7_1_0;${INSTALL_DIR}/qqualif;${INSTALL_DIR}/gmds072;${INSTALL_DIR}/qualif;${INSTALL_DIR}/lima;${INSTALL_DIR}/gmdscea;${INSTALL_DIR}/triton2;${INSTALL_DIR}/qtutil;${INSTALL_DIR}/qwtcharts;${INSTALL_DIR}/qtpython;${INSTALL_DIR}/qtvtk;${INSTALL_DIR}/mesquite-2.3.0;${INSTALL_DIR}/CGNS-4.3.0" \
-    -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/${PRJ} -DUSE_PYTHON_3:BOOL=ON &&\
-    cmake --build build/${PRJ} --target install
+COPY import-sources.sh /containerws/import-sources.sh
+RUN /containerws/import-sources.sh
 #==========================================
 ENV LD_LIBRARY_PATH=/containerws/install/mgx/lib:/containerws/install/occt-V7_1_0/lib
