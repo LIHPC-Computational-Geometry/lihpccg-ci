@@ -12,6 +12,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR /containerws
 #==========================================
 RUN curl -LO https://raw.githubusercontent.com/LIHPC-Computational-Geometry/lihpccg-ci/main/images/import-sources.sh &&\
-    /containerws/import-sources.sh
+    chmod +x import-sources.sh &&\
+    ./import-sources.sh
 #==========================================
 ENV LD_LIBRARY_PATH=/containerws/install/mgx/lib:/containerws/install/occt-V7_1_0/lib
