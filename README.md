@@ -8,7 +8,7 @@ Docker images are used to provide:
 - a development environment for mgx and all dependent projects,
 - an executable mgx product.
 
-** If you want to use Docker images for mgx, you can read [this document](./CONTAINERS.md) **
+**If you want to use Docker images for mgx, you can read [this document](./CONTAINERS.md).**
 
 The following graph shows the dependencies between mgx and other LIHPC-CG projects. It is built from the explicit Cmake dependencies specified in the `ci` presets of each project (see `CMakePresets.json` file).
 
@@ -27,7 +27,7 @@ This repository contains 6 docker images available in the Packages section on th
 - `cmake-cgcore-mgx`: mgx image based on `cmake-cgcore` and built with Cmake. It contains last mgx release and all its dependencies.
 - `nightly`: mgx image based on `cmake-cgcore` and built with Cmake. It contains mgx mainline (`git clone`) and all its dependencies' mainlines.
 
-** Software versions used in images: Ubuntu 22.04 (g++ 11.3.0, cmake 3.22.1) and Spack 0.19. **
+**Software versions used in images: Ubuntu 22.04 (g++ 11.3.0, cmake 3.22.1) and Spack 0.19.**
 
 The dockerfiles used to create those images are available in the [images](./images) directory. The dockerfile in charge of creating a `xxx` image is named `Dockerfile.xxx`, for example `Dockerfile.cmake-cgcore` for `cmake-cgcore image`.
 
