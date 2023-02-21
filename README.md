@@ -1,7 +1,7 @@
 # lihpccg-ci
 
 This repository contains common tools for Continuous Integration (CI):
-- CI workflows called by all projects of the mgx are: [cmake-reusable.yml](./.github/workflows/cmake-reusable.yml) and [spack-reusable.yml](./.github/workflows/spack-reusable.yml)),
+- CI workflows called by all projects of the mgx: [cmake-reusable.yml](./.github/workflows/cmake-reusable.yml) and [spack-reusable.yml](./.github/workflows/spack-reusable.yml),
 - CI workflows to create docker images: [image-creator.yml](./.github/workflows/image-creator.yml) and [nightly.yml](./.github/workflows/nightly.yml).
 
 Docker images are used to provide:
