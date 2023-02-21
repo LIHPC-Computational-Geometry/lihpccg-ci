@@ -2,6 +2,10 @@ name: Reusable Spack workflow
 
 on:
   workflow_call:
+    inputs:
+      test-link-options:
+        required: false
+        type: string
 
 env:
   QT_QPA_PLATFORM: offscreen
@@ -52,7 +56,7 @@ jobs:
           spack env activate ci-env
           spack load ${{ github.event.repository.name }}
           cd test_link/
-          cmake -S . -B build_exe
+          cmake -S . -B build_exe ${{ inputs.test-link-options }}
           cmake --build build_exe
           cd build_exe
           ctest
