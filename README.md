@@ -29,7 +29,7 @@ This repository contains 6 docker images available in the Packages section on th
 
 **Software versions used in images: Ubuntu 22.04 (g++ 11.3.0, cmake 3.22.1) and Spack 0.19.**
 
-The dockerfiles used to create those images are available in the [images](./images) directory. The dockerfile in charge of creating a `xxx` image is named `Dockerfile.xxx`, for example `Dockerfile.cmake-cgcore` for `cmake-cgcore image`.
+The dockerfiles used to create those images are available in the [images](./images) directory. The dockerfile in charge of creating a `xxx` image is named `Dockerfile.xxx`, for example `Dockerfile.cmake-cgcore` for `cmake-cgcore` image.
 
 The `nightly`image is created automatically everyday at midnight. The `spack-mgx` image is "handmade": it takes more than 6 hours to create (exceeds the maximum possible free time on GitHub). The others images can be created through github menus:
 - Actions menu on the top,
