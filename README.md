@@ -19,7 +19,7 @@ The black round nodes are LIHPC-CG projects.
 
 ## Docker images
 
-This repository contains 6 docker images available in the Packages section on the right of this HTML page:
+This repository contains 6 docker images available in the Packages section on the right of the lihpccg-ci main page:
 - `spack-mgx`: image based on Ubuntu and built with Spack. It contains last mgx release and its dependencies.
 - `spack-cgcore`: LIHPC-CG core image based on Ubuntu and built with Spack. It contains Qwt, CGNS, VTK, Open Cascade...
 - `spack-cgcore-mgx`: mgx image based on `spack-cgcore` and built with Spack. It contains last mgx release and all its dependencies.
