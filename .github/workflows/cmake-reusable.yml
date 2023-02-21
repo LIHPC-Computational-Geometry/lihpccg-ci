@@ -6,9 +6,6 @@ on:
       run-tests:
         required: true
         type: boolean
-      cmake-options:
-        required: false
-        type: string
 
 env:
   QT_QPA_PLATFORM: offscreen
