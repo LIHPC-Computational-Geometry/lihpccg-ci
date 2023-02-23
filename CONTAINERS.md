@@ -7,7 +7,7 @@ We decide to use [Podman](https://podman.io/) instead of docker as it does not r
 
 To completely uninstall Docker:
 
- *Step 1* 
+*Step 1* 
 
     dpkg -l | grep -i docker
 
