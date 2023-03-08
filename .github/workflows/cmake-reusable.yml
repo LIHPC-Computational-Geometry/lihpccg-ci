@@ -47,4 +47,5 @@ jobs:
           # Do not use ${{ github.event.repository.name }}_ROOT variable: package names != project names (sometimes)
           cmake -S . -B build --preset=ci -DCMAKE_PREFIX_PATH=/${{ github.event.repository.name }}-install
           cmake --build build
+          cd build
           ctest
