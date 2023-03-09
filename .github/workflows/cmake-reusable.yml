@@ -22,7 +22,8 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout source code from GitHub
+        uses: actions/checkout@v3
         with:
           fetch-depth: 2 # seems to be needed by codecov
           submodules: recursive
@@ -38,6 +39,13 @@ jobs:
         shell: bash
         run: |
           cmake --build build --target test
+
+      - name: Archive unit tests logs
+        if: ${{ inputs.run-tests }} && failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-test-logs
+          path: /__w/tkutil/tkutil/build/Testing/Temporary/LastTest.log
 
       - name: Test C++ lib install
         shell: bash
