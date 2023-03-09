@@ -58,5 +58,4 @@ jobs:
           cd test_link/
           cmake -S . -B build ${{ inputs.test-link-options }}
           cmake --build build
-          cd build
-          ctest
+          cmake --build build --target test
