@@ -41,7 +41,7 @@ jobs:
           cmake --build build --target test
 
       - name: Archive unit tests logs
-        if: ${{ inputs.run-tests }}
+        if: ${{ inputs.run-tests && failure() }}
         uses: actions/upload-artifact@v3
         with:
           name: unit-test-logs
