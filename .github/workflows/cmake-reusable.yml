@@ -37,7 +37,7 @@ jobs:
         if: ${{ inputs.run-tests }}
         shell: bash
         run: |
-          make test
+          cmake --build build --target test
 
       - name: Test C++ lib install
         shell: bash
